@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Filter</title>
+</head>
+<body>
+    <h1>Product Filter</h1>
+
+    <div id="category-buttons"></div>
+    
+    <div id="product-list"></div>
+
+    <script>
+        class ProductFilter {
+            constructor(products, options) {
+                this.products = products;
+                this.categoryButtons = document.getElementById(options.categoriesId);
+                this.productList = document.getElementById(options.productsId);
+                this.init(options.initialCategory);
+            }
+
+            renderProducts(filteredProducts) {
+                this.productList.innerHTML = '';
+
+                filteredProducts.forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.textContent = `${product.name} - ${product.price} USD`;
+                    this.productList.appendChild(productItem);
+                });
+            }
+
+            filterByCategory(category) {
+                const filteredProducts = this.products.filter(product => category === 'All' || product.category === category);
+                this.renderProducts(filteredProducts);
+            }
+
+            renderCategoryButtons(categories) {
+                categories.forEach(category => {
+                    const categoryButton = document.createElement('button');
+                    categoryButton.textContent = category;
+                    categoryButton.addEventListener('click', () => {
+                        this.filterByCategory(category);
+                    });
+                    this.categoryButtons.appendChild(categoryButton);
+                });
+            }
+
+            init(initialCategory = 'All') {
+                const categories = ['All', ...new Set(this.products.map(product => product.category))];
+                this.renderCategoryButtons(categories);
+                this.filterByCategory(initialCategory);
+            }
+        }
+
+        const products = [
+            { name: 'Iphone', category: 'smartphone', price: 10 },
+            { name: 'Macbook', category: 'laptop', price: 15 },
+            { name: 'Imac', category: 'Desktop', price: 20 },
+        ];
+
+        const options = {
+            categoriesId: 'category-buttons',
+            productsId: 'product-list',
+        };
+
+        const productFilter = new ProductFilter(products, options);
+    </script>
+</body>
+</html>
